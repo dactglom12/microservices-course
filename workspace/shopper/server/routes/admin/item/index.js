@@ -1,6 +1,6 @@
 // Import necessary modules
 const express = require("express");
-const CatalogService = require("../../../services/CatalogService");
+const CatalogClient = require("../../../services/CatalogClient");
 
 // Create a new Express router
 const router = express.Router();
@@ -9,13 +9,13 @@ const router = express.Router();
 router.get("/:itemId?", async (req, res, next) => {
   try {
     // Get all items
-    const items = await CatalogService.getAll();
+    const items = await CatalogClient.getAll();
 
     let item = null;
 
     // If an itemId was provided, get that specific item
     if (req.params.itemId) {
-      item = await CatalogService.getOne(req.params.itemId);
+      item = await CatalogClient.getOne(req.params.itemId);
     }
 
     // Render the page with the items data
@@ -45,11 +45,11 @@ router.post("/", async (req, res) => {
   try {
     // If there was no existing item we now want to create a new item object
     if (!req.body.itemId) {
-      await CatalogService.create({ sku, name, price });
+      await CatalogClient.create({ sku, name, price }, req.session.token);
     } else {
       // Update an existing item
       const itemData = { sku, name, price };
-      await CatalogService.update(req.body.itemId, itemData);
+      await CatalogClient.update(req.body.itemId, itemData, req.session.token);
     }
 
     // Provide feedback
@@ -75,7 +75,7 @@ router.post("/", async (req, res) => {
 router.get("/delete/:itemId", async (req, res) => {
   try {
     // Remove the item
-    await CatalogService.remove(req.params.itemId);
+    await CatalogClient.remove(req.params.itemId, req.session.token);
 
     // Provide feedback
     req.session.messages.push({
