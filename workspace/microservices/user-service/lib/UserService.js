@@ -76,6 +76,9 @@ class UserService {
    * delete operation
    */
   static async remove(userId) {
+    console.log("userId");
+    console.log(userId);
+
     return UserModel.deleteOne({ _id: userId }).exec();
   }
 }

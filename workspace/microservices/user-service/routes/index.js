@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const UserService = require("../lib/UserService");
 
 const router = express.Router();
@@ -45,10 +46,10 @@ router.put("/users/:id", async (req, res) => {
   try {
     const updatedUser = await UserService.update(req.params.id, req.body);
     if (!updatedUser) return res.status(404).send("User not found");
-    res.json(createJson(updatedUser));
+    return res.json(createJson(updatedUser));
   } catch (error) {
     console.error(error);
-    res.status(500).send("General error");
+    return res.status(500).send("General error");
   }
 });
 
@@ -59,10 +60,14 @@ router.post("/users/authenticate", async (req, res) => {
       req.body.password
     );
     if (!authUser) return res.status(403).send("User not found");
-    return res.json(createJson(authUser));
+    const token = jwt.sign(createJson(authUser), "my secret key", {
+      expiresIn: 60 * 60 * 24
+    });
+
+    return res.json({ token });
   } catch (error) {
     console.error(error);
-    res.status(500).send("General error");
+    return res.status(500).send("General error");
   }
 });
 

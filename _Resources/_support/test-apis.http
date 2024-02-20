@@ -1,5 +1,5 @@
 // Testing the catalog-service - make sure to update the port
-@catalog-service-port = 50169
+@catalog-service-port = 52384
 
 ##
 GET http://localhost:{{catalog-service-port}}/items

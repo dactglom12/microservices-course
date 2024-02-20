@@ -50,7 +50,7 @@ server.on("listening", () => {
       .catch((err) => console.error(err));
 
   registerService();
-  const interval = setInterval(registerService, 15000);
+  const interval = setInterval(registerService, 10000);
   const cleanup = async () => {
     let clean = false;
     if (!clean) {
